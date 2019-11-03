@@ -3,7 +3,7 @@
 
 <!-- Page d'accueil: -->
 	<welcome-file-list>
-		<welcome-file>creation-commande.html</welcome-file>
+		<welcome-file>/inc/menu.jsp</welcome-file>
 	</welcome-file-list>
 	
 <!-- mapping des servlets -->

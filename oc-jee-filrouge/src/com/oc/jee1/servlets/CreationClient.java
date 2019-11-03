@@ -11,31 +11,46 @@ import com.oc.jee1.beans.Client;
 
 
 public class CreationClient extends HttpServlet {
+    /* Constantes */
+    public static final String CHAMP_NOM       = "nomClient";
+    public static final String CHAMP_PRENOM    = "prenomClient";
+    public static final String CHAMP_ADRESSE   = "adresseClient";
+    public static final String CHAMP_TELEPHONE = "telephoneClient";
+    public static final String CHAMP_EMAIL     = "emailClient";
+ 
+    public static final String ATT_CLIENT      = "client";
+    public static final String ATT_MESSAGE     = "message";
+    public static final String ATT_ERREUR      = "erreur";
+ 
+    public static final String VUE             = "/afficherClient.jsp";
 
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
         /*
-         * Récupération des données saisies, envoyées en tant que paramètres de
-         * la requête GET générée à la validation du formulaire
+         * RÃ©cupÃ©ration des donnÃ©es saisies, envoyÃ©es en tant que paramÃ¨tres de
+         * la requÃªte GET gÃ©nÃ©rÃ©e Ã  la validation du formulaire
          */
-        String nom = request.getParameter( "nomClient" );
-        String prenom = request.getParameter( "prenomClient" );
-        String adresse = request.getParameter( "adresseClient" );
-        String telephone = request.getParameter( "telephoneClient" );
-        String email = request.getParameter( "emailClient" );
+        String nom = request.getParameter( CHAMP_NOM );
+        String prenom = request.getParameter( CHAMP_PRENOM );
+        String adresse = request.getParameter( CHAMP_ADRESSE );
+        String telephone = request.getParameter( CHAMP_TELEPHONE );
+        String email = request.getParameter( CHAMP_EMAIL );
 
         String message;
+        boolean erreur;
         /*
-         * Initialisation du message à afficher : si un des champs obligatoires
-         * du formulaire n'est pas renseigné, alors on affiche un message
-         * d'erreur, sinon on affiche un message de succès
+         * Initialisation du message Ã  afficher : si un des champs obligatoires
+         * du formulaire n'est pas renseignÃ©, alors on affiche un message
+         * d'erreur, sinon on affiche un message de succÃ¨s
          */
         if ( nom.trim().isEmpty() || adresse.trim().isEmpty() || telephone.trim().isEmpty() ) {
-            message = "Erreur - Vous n'avez pas rempli tous les champs obligatoires. <br> <a href=\"creerClient.jsp\">Cliquez ici</a> pour accéder au formulaire de création d'un client.";
+            message = "Erreur - Vous n'avez pas rempli tous les champs obligatoires. <br> <a href=\"creerClient.jsp\">Cliquez ici</a> pour accÃ©der au formulaire de crÃ©ation d'un client.";
+            erreur = true;
         } else {
-            message = "Client créé avec succès !";
+            message = "Client crÃ©Ã© avec succÃ¨s !";
+            erreur = false;
         }
         /*
-         * Création du bean Client et initialisation avec les données récupérées
+         * CrÃ©ation du bean Client et initialisation avec les donnÃ©es rÃ©cupÃ©rÃ©es
          */
         Client client = new Client();
         client.setNom( nom );
@@ -44,11 +59,12 @@ public class CreationClient extends HttpServlet {
         client.setTelephone( telephone );
         client.setEmail( email );
 
-        /* Ajout du bean et du message à l'objet requête */
-        request.setAttribute( "client", client );
-        request.setAttribute( "message", message );
+        /* Ajout du bean et du message Ã  l'objet requÃªte */
+        request.setAttribute( ATT_CLIENT, client );
+        request.setAttribute( ATT_MESSAGE, message );
+        request.setAttribute( ATT_ERREUR, erreur );
 
-        /* Transmission à la page JSP en charge de l'affichage des données */
-        this.getServletContext().getRequestDispatcher( "/afficherClient.jsp" ).forward( request, response );
+        /* Transmission Ã  la page JSP en charge de l'affichage des donnÃ©es */
+        this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }
 }
