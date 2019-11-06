@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
 
-<!-- Page d'accueil: -->
+	<!-- Page d'accueil: -->
 	<welcome-file-list>
 		<welcome-file>/inc/menu.jsp</welcome-file>
 	</welcome-file-list>
-	
-<!-- mapping des servlets -->
+
+	<!-- mapping des servlets -->
 	<servlet>
 		<servlet-name>CreationClient</servlet-name>
 		<servlet-class>com.oc.jee1.servlets.CreationClient</servlet-class>
@@ -25,13 +25,13 @@
 		<url-pattern>/creationCommande</url-pattern>
 	</servlet-mapping>
 
-<!-- ficher précissant les entêtes des jsp pour le jstl -->
-<!-- 	<jsp-config> -->
-<!-- 		<jsp-property-group> -->
-<!-- 			<url-pattern>*.jsp</url-pattern> -->
-<!-- 			<include-prelude>/WEB-INF/taglibs.jsp</include-prelude> -->
-<!-- 		</jsp-property-group> -->
-<!-- 	</jsp-config> -->
+	<!-- ficher précissant les entêtes des jsp pour le jstl -->
+	<!-- <jsp-config> -->
+	<!-- <jsp-property-group> -->
+	<!-- <url-pattern>*.jsp</url-pattern> -->
+	<!-- <include-prelude>/WEB-INF/taglibs.jsp</include-prelude> -->
+	<!-- </jsp-property-group> -->
+	<!-- </jsp-config> -->
 
 
 </web-app>
