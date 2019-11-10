@@ -6,11 +6,16 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Affichage d'une commande</title>
 <link
-	type="text/css"
 	rel="stylesheet"
-	href="<c:url value="/inc/style.css"/>" />
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<title>Affichage d'une commande</title>
+<!-- <link -->
+<!-- 	type="text/css" -->
+<!-- 	rel="stylesheet" -->
+<%-- 	href="<c:url value="/inc/style.css"/>" /> --%>
 </head>
 <body>
 	<c:import url="/inc/menu.jsp" />
