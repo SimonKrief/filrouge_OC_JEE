@@ -1,13 +1,13 @@
 package com.oc.jee1.forms;
-
-
-
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+
 
 import com.oc.jee1.beans.Client;
 import com.oc.jee1.beans.Commande;
@@ -15,6 +15,8 @@ import com.oc.jee1.beans.Commande;
 
 
 public final class CreationCommandeForm {
+    private static final String CHAMP_CHOIX_CLIENT     = "choixNouveauClient";
+    private static final String CHAMP_LISTE_CLIENTS    = "listeClients";
     private static final String CHAMP_DATE             = "dateCommande";
     private static final String CHAMP_MONTANT          = "montantCommande";
     private static final String CHAMP_MODE_PAIEMENT    = "modePaiementCommande";
@@ -22,6 +24,8 @@ public final class CreationCommandeForm {
     private static final String CHAMP_MODE_LIVRAISON   = "modeLivraisonCommande";
     private static final String CHAMP_STATUT_LIVRAISON = "statutLivraisonCommande";
 
+    private static final String ANCIEN_CLIENT          = "ancienClient";
+    private static final String SESSION_CLIENTS        = "clients";
     private static final String FORMAT_DATE            = "dd/MM/yyyy HH:mm:ss";
 
     private String              resultat;
@@ -36,21 +40,37 @@ public final class CreationCommandeForm {
     }
 
     public Commande creerCommande( HttpServletRequest request ) {
+        Client client;
         /*
-         * L'objet métier pour valider la création d'un client existe déjà, il
-         * est donc déconseillé de dupliquer ici son contenu ! À la place, il
-         * suffit de passer la requête courante à l'objet métier existant et de
-         * récupérer l'objet Client créé.
+         * Si l'utilisateur choisit un client déjà existant, pas de validation à
+         * effectuer
          */
-        CreationClientForm clientForm = new CreationClientForm();
-        Client client = clientForm.creerClient( request );
+        String choixNouveauClient = getValeurChamp( request, CHAMP_CHOIX_CLIENT );
+        if ( ANCIEN_CLIENT.equals( choixNouveauClient ) ) {
+            /* Récupération du nom du client choisi */
+            String nomAncienClient = getValeurChamp( request, CHAMP_LISTE_CLIENTS );
+            /* Récupération de l'objet client correspondant dans la session */
+            HttpSession session = request.getSession();
+            client = ( (Map<String, Client>) session.getAttribute( SESSION_CLIENTS ) ).get( nomAncienClient );
+        } else {
+            /*
+             * Sinon on garde l'ancien mode, pour la validation des champs.
+             * 
+             * L'objet métier pour valider la création d'un client existe déjà,
+             * il est donc déconseillé de dupliquer ici son contenu ! À la
+             * place, il suffit de passer la requête courante à l'objet métier
+             * existant et de récupérer l'objet Client créé.
+             */
+            CreationClientForm clientForm = new CreationClientForm();
+            client = clientForm.creerClient( request );
 
-        /*
-         * Et très important, il ne faut pas oublier de récupérer le contenu de
-         * la map d'erreurs créée par l'objet métier CreationClientForm dans la
-         * map d'erreurs courante, actuellement vide.
-         */
-        erreurs = clientForm.getErreurs();
+            /*
+             * Et très important, il ne faut pas oublier de récupérer le contenu
+             * de la map d'erreur créée par l'objet métier CreationClientForm
+             * dans la map d'erreurs courante, actuellement vide.
+             */
+            erreurs = clientForm.getErreurs();
+        }
 
         /*
          * Ensuite, il suffit de procéder normalement avec le reste des champs
@@ -61,12 +81,9 @@ public final class CreationCommandeForm {
          * Récupération et conversion de la date en String selon le format
          * choisi.
          */
-
-        
 		LocalDateTime dt = LocalDateTime.now();// = new LocaDateTime(now);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
 		String date = dt.format(formatter);
-        
 
         String montant = getValeurChamp( request, CHAMP_MONTANT );
         String modePaiement = getValeurChamp( request, CHAMP_MODE_PAIEMENT );
@@ -78,8 +95,6 @@ public final class CreationCommandeForm {
 
         commande.setClient( client );
 
-        commande.setDate( date );
-
         double valeurMontant = -1;
         try {
             valeurMontant = validationMontant( montant );
@@ -87,6 +102,8 @@ public final class CreationCommandeForm {
             setErreur( CHAMP_MONTANT, e.getMessage() );
         }
         commande.setMontant( valeurMontant );
+
+        commande.setDate( date );
 
         try {
             validationModePaiement( modePaiement );

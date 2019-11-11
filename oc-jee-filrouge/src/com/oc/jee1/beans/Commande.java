@@ -2,7 +2,6 @@ package com.oc.jee1.beans;
 
 
 public class Commande {
-    /* Propriétés du bean */
     private Client client;
     private String date;
     private Double montant;

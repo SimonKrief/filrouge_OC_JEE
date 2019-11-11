@@ -1,7 +1,6 @@
 package com.oc.jee1.beans;
 
 public class Client {
-    /* Propriétés du bean */
     private String nom;
     private String prenom;
     private String adresse;
